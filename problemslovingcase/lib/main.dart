@@ -1,21 +1,42 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
+import 'package:problemslovingcase/model/csv_list_model.dart';
+import 'package:problemslovingcase/model/csv_model.dart';
 
 void main() {
-  _openFile();
+  String fileName = "input_file_name";
+  _openFile(fileName, getInputFileNameData());
+  fileName = "order_log00";
+  _openFile(fileName, getSampleFileNameData());
 }
 
-void _openFile() async {
-  /*String textasset = "assets/csv/input_file_name.txt"; //path to text file asset
-  String text = await rootBundle.loadString(textasset);
-  print(text);
-  return;*/
-  final input = File('assets/csv/input_file_name.csv').openRead();
-  final fields = await input
-      .transform(utf8.decoder)
-      .transform(const CsvToListConverter())
-      .toList();
-  print(fields);
+void _openFile(String name, List<CsvModel> l) async {
+  File f = File(name + ".csv");
+  bool isExist = await f.exists();
+  if (isExist) {
+    await f.delete();
+  }
+  _createCsv(f, l);
+  CsvListModel objCsvListModel = CsvListModel();
+  objCsvListModel.mapListToCsvModel(csvtoList(f));
+  List<CsvModel> list = objCsvListModel.fileOneOutput();
+  f = File("0_" + name + ".csv");
+  _createCsv(f, list);
+  list = objCsvListModel.fileZeroOutput();
+  f = File("1_" + name + ".csv");
+  _createCsv(f, list);
+}
+
+List<List> csvtoList(File file) {
+  CsvToListConverter c = CsvToListConverter(eol: "\r\n", fieldDelimiter: ",");
+  List<List> l = c.convert(file.readAsStringSync());
+  return l;
+}
+
+void _createCsv(File file, List<CsvModel> list) {
+  list.forEach((element) {
+    StringBuffer buffer = StringBuffer();
+    file.writeAsStringSync(element.getCsvWriteString(), mode: FileMode.append);
+  });
 }

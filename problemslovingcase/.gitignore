@@ -44,3 +44,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/0_input_file_name.csv
+/0_order_log00.csv
+/1_input_file_name.csv
+/1_order_log00.csv
+/input_file_name.csv
+/order_log00.csv

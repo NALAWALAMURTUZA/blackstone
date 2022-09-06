@@ -6,9 +6,9 @@ WORKDIR /app
 
 ## Copy the source and download the dependencies
 ADD ./dist/pubspec.* /app/
-RUN pub get
+RUN flutter pub get
 ADD ./dist /app
-RUN pub get --offline
+RUN flutter pub get --offline
 
 # Start the Dart web server
 ENTRYPOINT ["/usr/bin/dart", "/app/lib/main.dart"]

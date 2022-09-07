@@ -13,10 +13,13 @@ void main() {
 
 void _openFile(String name, List<CsvModel> l) async {
   File f = File(name + ".csv");
-  bool isExist = await f.exists();
-  if (isExist) {
-    await f.delete();
-  }
+  await Future.forEach(["", "0_", "1_"], (element) async {
+    File fExist = File(element + name + ".csv");
+    bool isExist = await fExist.exists();
+    if (isExist) {
+      await fExist.delete();
+    }
+  });
   _createCsv(f, l);
   CsvListModel objCsvListModel = CsvListModel();
   objCsvListModel.mapListToCsvModel(csvtoList(f));
